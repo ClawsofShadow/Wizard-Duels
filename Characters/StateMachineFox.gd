@@ -328,11 +328,11 @@ func AIRMOVEMENT():
 	
 	if parent.velocity.y < parent.FALLINGSPEED:
 		parent.velocity.y += parent.FALLSPEED
-	if Input.is_action_pressed("down_%s" % id) and parent.down_buffer == 1 and parent.velocity.y > -150 and not parent.fastfall:
+	if Input.is_action_pressed("down_%s" % id): # and parent.down_buffer == 1 and parent.velocity.y > -150 and not parent.fastfall:
 		parent.velocity.y = parent.MAXFALLSPEED
 		parent.fastfall = true
 	if parent.fastfall == true:
-		parent.set_collision_mask_bit(2,false)
+		parent.set_collision_mask_value(2, false)
 		parent.velocity.y = parent.MAXFALLSPEED
 
 	if abs(parent.velocity.x) >= abs(parent.MAXAIRSPEED):
