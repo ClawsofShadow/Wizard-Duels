@@ -2477,13 +2477,13 @@ shape = SubResource("RectangleShape2D_sh8i7")
 [node name="Raycasts" type="Node2D" parent="."]
 
 [node name="GroundL" type="RayCast2D" parent="Raycasts"]
-position = Vector2(-29, 40)
-target_position = Vector2(0, 10)
+position = Vector2(-29, 35)
+target_position = Vector2(0, 13)
 collision_mask = 6
 
 [node name="GroundR" type="RayCast2D" parent="Raycasts"]
-position = Vector2(29, 40)
-target_position = Vector2(0, 10)
+position = Vector2(29, 35)
+target_position = Vector2(0, 13)
 collision_mask = 6
 
 [node name="Ledge_Grab_F" type="RayCast2D" parent="Raycasts"]

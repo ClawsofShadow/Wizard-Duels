@@ -273,7 +273,7 @@ func get_transition(delta):
 				parent.velocity.y = -parent.DOUBLEJUMPFORCE
 				parent.airJump -= 1
 				if Input.is_action_pressed("left_%s" % id):
-					parent.velocity.x = -parent.MAXAIRPSEED
+					parent.velocity.x = -parent.MAXAIRSPEED
 				elif Input.is_action_pressed("right_%s" % id):
 					parent.velocity.x = parent.MAXAIRSPEED
 
@@ -548,7 +548,7 @@ func AIRMOVEMENT():
 			if Input.is_action_pressed("left_%s" % id):
 				parent.velocity.x = parent.velocity.x
 			elif Input.is_action_pressed("right_%s" % id):
-				parent.velocity.x += parent.AIR_ACCEl
+				parent.velocity.x += parent.AIR_ACCEL
 
 
 	elif abs(parent.velocity.x) < abs(parent.MAXAIRSPEED):
