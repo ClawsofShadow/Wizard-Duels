@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnff7f78ad0o5"]
+
+[ext_resource type="Script" path="res://Stages/Stage Assests/Ledge.gd" id="1_74eto"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wf26e"]
+size = Vector2(97, 39)
+
+[node name="Ledge" type="Area2D"]
+collision_layer = 8
+script = ExtResource("1_74eto")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -12.0
+offset_right = 22.0
+offset_bottom = 11.0
+text = "ledge"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(4.5, -0.5)
+shape = SubResource("RectangleShape2D_wf26e")
+
+[connection signal="body_exited" from="." to="." method="_on_Ledge_body_exited"]

@@ -7,6 +7,12 @@ var jump_squat: int = 3
 var landing_frames: int = 0
 var lag_frames: int = 0
 var fastfall: bool = false
+var airJump = 0
+@export var airJumpMax = 1
+
+var last_ledge = false
+var regrab = 30
+var catch = false
 
 @onready var GroundL = get_node("Raycasts/GroundL")
 @onready var GroundR = get_node("Raycasts/GroundR")
@@ -57,6 +63,12 @@ func frames():
 
 func play_animation(animation_name):
 	anim.play(animation_name)
+
+func reset_Jumps():
+	airJump = airJumpMax
+
+func reset_ledge():
+	last_ledge = false
 
 func _ready():
 	pass

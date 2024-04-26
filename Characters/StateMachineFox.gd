@@ -14,11 +14,18 @@ func _ready():
 	add_state('CROUCH')
 	add_state('AIR')
 	add_state('LANDING')
+	add_state('LEDGE_CATCH')
+	add_state('LEDGE_HOLD')
+	add_state('LEDGE_CLIMB')
+	add_state('LEDGE_JUMP')
+	add_state('LEDGE_ROLL')
 	call_deferred("set_state", states.STAND)
 
 func state_logic(delta):
 	parent.updateframes(delta)
 	parent._physics_process(delta)
+	if parent.regrab > 0:
+		parent.regrab -= 1
 
 func get_transition(delta):
 	#parent.move_and_slide_with_snap(parent.velocity*2,Vector2.ZERO,Vector2.UP)
@@ -30,10 +37,16 @@ func get_transition(delta):
 	if Falling() == true:
 		return states.AIR
 
+	if Ledge() == true:
+		parent.frames()
+		return states.LEDGE_CATCH
+	else:
+		parent.reset_ledge()
 
 	match state:
 		
 		states.STAND:
+			parent.reset_Jumps()
 			if Input.is_action_just_pressed("jump_%s" % id):
 				parent.frames()
 				return states.JUMP_SQUAT
@@ -254,8 +267,18 @@ func get_transition(delta):
 
 		states.AIR:
 			AIRMOVEMENT()
+			if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+				parent.fastfall = false
+				parent.velocity.x = 0
+				parent.velocity.y = -parent.DOUBLEJUMPFORCE
+				parent.airJump -= 1
+				if Input.is_action_pressed("left_%s" % id):
+					parent.velocity.x = -parent.MAXAIRPSEED
+				elif Input.is_action_pressed("right_%s" % id):
+					parent.velocity.x = parent.MAXAIRSPEED
 
 		states.LANDING:
+			
 			if parent.frame <= parent.landing_frames + parent.lag_frames:
 				if parent.frame == 1:
 					pass
@@ -272,12 +295,177 @@ func get_transition(delta):
 				if Input.is_action_pressed("down_%s" % id):
 					parent.lag_frames = 0
 					parent.frames()
+					parent.reset_Jumps()
 					return states.CROUCH
 				else:
 					parent.frames()
 					parent.lag_frames = 0
+					parent.reset_Jumps()
 					return states.STAND
 				parent.lag_frames = 0
+
+		states.LEDGE_CATCH:
+			if parent.frame > 7:
+				parent.lag_frames = 0
+				parent.reset_jumps()
+				parent.frames()
+				return states.LEDGE_HOLD
+
+		states.LEDGE_HOLD:
+			if parent.frame >= 390:
+				self.parent.position.y += -25
+				parent.frames()
+				return states.AIR
+
+			if Input.is_action_just_pressed("down_%s" % id):
+				parent.fastfall = true
+				parent.regrab = 30
+				parent.reset_ledge()
+				self.parent.position.y += -25
+				parent.catch = false
+				parent.frames()
+				return states.AIR
+
+			elif parent.Ledge_Grab_F.get_target_position().x > 0:
+				if Input.is_action_just_pressed("left_%s" % id):
+					parent.velocity.x = (parent.AIR_ACCEL/2)
+					parent.regrab = 30
+					parent.reset_ledge()
+					self.parent.position.y += -25
+					parent.catch = false
+					parent.frames()
+					return states.AIR
+				elif Input.is_action_just_pressed("right_%s" % id):
+					parent.frames()
+					return states.LEDGE_CLIMB
+				elif Input.is_action_just_pressed("shield_%s" % id):
+					parent.frames()
+					return states.LEDGE_ROLL
+				elif Input.is_action_just_pressed("jump_%s" % id):
+					parent.frames()
+					return states.LEDGE_JUMP
+
+			elif parent.Ledge_Grab_F.get_target_position().x < 0:
+				if Input.is_action_just_pressed("right_%s" % id):
+					parent.velocity.x = (parent.AIR_ACCEL/2)
+					parent.regrab = 30
+					parent.reset_ledge()
+					self.parent.position.y += -25
+					parent.frames()
+					return states.AIR
+				elif Input.is_action_just_pressed("left_%s" % id):
+					parent.frames()
+					return states.LEDGE_CLIMB
+				elif Input.is_action_just_pressed("shield_%s" % id):
+					parent.frames()
+					return states.LEDGE_ROLL
+				elif Input.is_action_just_pressed("jump_%s" % id):
+					parent.frames()
+					return states.LEDGE_JUMP
+
+		states.LEDGE_CLIMB:
+			if parent.frame == 1:
+				pass
+			if parent.frame == 5:
+				parent.position.y -= 25
+			if parent.frame == 10:
+				parent.position.y -= 25
+			if parent.frame == 22:
+				parent.catch = false
+				parent.position.y -= 25
+				parent.position.x += 50 * parent.direction()
+			if parent.frame == 25:
+				parent.velocity.y = 0
+				parent.velocity.x = 0
+				parent.move_and_collide(Vector2(parent.direction()*20, 50))
+			if parent.frame == 30:
+				parent.reset_ledge()
+				parent.frames()
+				return states.STAND
+
+		states.LEDGE_JUMP:
+			if parent.frame > 14:
+				if Input.is_action_just_pressed("attack_%s" % id):
+					parent.frames()
+					return states.AIR_ATTACK
+				if Input.is_action_just_pressed("special_%s" % id):
+					parent.frames()
+					return states.SPECIAL
+
+			if parent.frame == 5:
+				parent.reset_ledge()
+				parent.position.y -= 20
+
+			if parent.frame == 20:
+				parent.catch = false
+				parent.position.y -= 20
+				if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+					parent.fastfall = false
+					parent.velocity.y = -parent.DOUBLEJUMPFORCE
+					parent.velocity.x = 0
+					parent.airJump -= 1
+					parent.frames()
+					return states.AIR
+
+			if parent.frame == 15:
+				parent.position.y -= 20
+				parent.velocity.y -= parent.DOUBLEJUMPFORCE
+				parent.velocity.x += 220*parent.direction()
+				if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+					parent.fastfall = false
+					parent.velocity.y = -parent.DOUBLEJUMPFORCE
+					parent.velocity.x = 0
+					parent.airJump -= 1
+					parent.frames()
+					return states.AIR
+				if Input.is_action_just_pressed("attack_%s"  % id):
+					parent.frames()
+					return states.AIR_ATTACK
+
+				elif parent.frame > 15 and parent.frame < 20:
+					parent.velocity.y += parent.FALLSPEED
+					if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+						parent.fastfall = false
+						parent.velocity.y = -parent.DOUBLEJUMPFORCE
+						parent.velocity.x = 0
+						parent.airJump -= 1
+						parent.frames()
+						return states.AIR
+					if Input.is_action_just_pressed("attack_%s" % id):
+						parent.frames()
+						return states.AIR_ATTACK
+
+				if parent.frame == 20:
+					parent.frames()
+					return states.AIR
+
+		states.LEDGE_ROLL:
+			if parent.frame == 1:
+				pass
+			if parent.frame == 5:
+				parent.position.y -= 30
+			if parent.frame == 10:
+				parent.position.y -= 30
+
+			if parent.frame == 20:
+				parent.catch = false
+				parent.position.y -= 30
+
+			if parent.frame == 22:
+				parent.position.y -= 30
+				parent.position.x += 50*parent.direction()
+
+			if parent.frame == 22 and parent.frame == 28:
+				parent.position.x += 30 * parent.direction()
+
+			if parent.frame == 29:
+				parent.move_and_collide(Vector2(parent.direction()*20, 50))
+			if parent.frame == 30:
+				parent.velocity.y = 0
+				parent.velocity.x = 0
+				parent.reset_ledge()
+				parent.frames()
+				return states.STAND
 
 func enter_state(new_state, old_state):
 	match new_state:
@@ -313,6 +501,21 @@ func enter_state(new_state, old_state):
 			return false
 		states.LANDING:
 			parent.play_animation('LANDING')
+			return false
+		states.LEDGE_CATCH:
+			parent.play_animation('LEDGE_CATCH')
+			return false
+		states.LEDGE_HOLD:
+			parent.play_animation('LEDGE_CATCH')
+			return false
+		states.LEDGE_JUMP:
+			parent.play_animation('AIR')
+			return false
+		states.LEDGE_CLIMB:
+			parent.play_animation('ROLL_FORWARD')
+			return false
+		states.LEDGE_ROLL:
+			parent.play_animation('ROLL_FORWARD')
 			return false
 
 func exit_state(old_state, new_state):
@@ -382,3 +585,73 @@ func Falling():
 	if states_includes([states.STAND,states.DASH,states.MOONWALK,states.RUN,states.CROUCH,states.WALK]):
 		if not parent.GroundL.is_colliding() and not parent.GroundR.is_colliding():
 			return true
+
+func Ledge():
+	if states_includes([states.AIR]):
+		if (parent.Ledge_Grab_F.is_colliding()):
+			var collider = parent.Ledge_Grab_F.get_collider()
+			if collider.get_node('Label').text == 'Ledge_L' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
+				if states_includes([states.AIR]):
+					if parent.velocity.y < 0:
+						return false
+					parent.frame = 0
+					parent.velocity.x = 0
+					parent.velocity.y = 0
+					self.parent.position.x = collider.position.x - 20
+					self.parent.position.y = collider.position.y - 2
+					parent.turn(false)
+					parent.reset_Jumps()
+					parent.fastfall = false
+					collider.is_grabbed = true
+					parent.last_ledge = collider
+					return true
+
+			if collider.get_node('Label').text == 'Ledge_R' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
+				if states_includes([states.AIR]):
+					if parent.velocity.y < 0:
+						return false
+					parent.frame = 0
+					parent.velocity.x = 0
+					parent.velocity.y = 0 
+					self.parent.position.x = collider.position.x + 20
+					self.parent.position.y = collider.position.x + 1
+					parent.turn(false)
+					parent.reset_Jumps()
+					parent.fastfall = false
+					collider.is_grabbed = true
+					parent.last_ledge = collider
+					return true
+
+		if(parent.Ledge_Grab_B.is_colliding()):
+			var collider = parent.Ledge_Grab_B.get_collider()
+			if collider.get_node('Label').text == 'Ledge_L' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
+				if states_includes([states.AIR]):
+					if parent.velocity.y < 0:
+						return false
+					parent.frame = 0
+					parent.velocity.x = 0
+					parent.velocity.y = 0
+					self.parent.position.x = collider.position.x - 20
+					self.parent.position.y = collider.position.y - 1
+					parent.turn(false)
+					parent.reset_Jumps()
+					parent.fastfall = false
+					collider.is_grabbed = true
+					parent.last_ledge = collider
+					return true
+
+			if collider.get_node('Label').text == 'Ledge_R' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
+				if states_includes([states.AIR]):
+					if parent.velocity.y < 0:
+						return false
+					parent.frame = 0
+					parent.velocity.x = 0
+					parent.velocity.y = 0 
+					self.parent.position.x = collider.position.x + 20
+					self.parent.position.y = collider.position.y + 1
+					parent.turn(false)
+					parent.reset_Jumps()
+					parent.fastfall = false
+					collider.is_grabbed = true
+					parent.last_ledge = collider
+					return true

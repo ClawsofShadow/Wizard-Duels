@@ -54,4 +54,4 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 
 [node name="FOX" parent="." instance=ExtResource("2_8lmml")]
-position = Vector2(305, 156)
+position = Vector2(305, 136)
