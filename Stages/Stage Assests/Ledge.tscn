@@ -7,6 +7,7 @@ size = Vector2(97, 39)
 
 [node name="Ledge" type="Area2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_74eto")
 
 [node name="Label" type="Label" parent="."]

@@ -307,7 +307,7 @@ func get_transition(delta):
 		states.LEDGE_CATCH:
 			if parent.frame > 7:
 				parent.lag_frames = 0
-				parent.reset_jumps()
+				parent.reset_Jumps()
 				parent.frames()
 				return states.LEDGE_HOLD
 
@@ -589,6 +589,7 @@ func Falling():
 func Ledge():
 	if states_includes([states.AIR]):
 		if (parent.Ledge_Grab_F.is_colliding()):
+			print('colliding with ledge')
 			var collider = parent.Ledge_Grab_F.get_collider()
 			if collider.get_node('Label').text == 'Ledge_L' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
 				if states_includes([states.AIR]):

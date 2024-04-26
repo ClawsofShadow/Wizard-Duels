@@ -1,4 +1,4 @@
-[gd_scene load_steps=222 format=3 uid="uid://bgf743xmdymnl"]
+[gd_scene load_steps=223 format=3 uid="uid://bgf743xmdymnl"]
 
 [ext_resource type="Texture2D" uid="uid://cu6xbjaem7egy" path="res://Characters/Fox/sprites/idle_strip10.png" id="1_0p8k7"]
 [ext_resource type="Script" path="res://Characters/StateMachineFox.gd" id="1_4lnp5"]
@@ -2406,6 +2406,35 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3, 4]
 }
 
+[sub_resource type="Animation" id="Animation_htoxl"]
+resource_name = "RUN"
+length = 0.400002
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"DASH 1"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.383333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_y26cr"]
 _data = {
 "AIR": SubResource("Animation_nn6de"),
@@ -2438,6 +2467,7 @@ _data = {
 "PARRY": SubResource("Animation_nbmbj"),
 "RESET": SubResource("Animation_rxihv"),
 "ROLL_FORWARD": SubResource("Animation_cpl5n"),
+"RUN": SubResource("Animation_htoxl"),
 "TECH_GROUND": SubResource("Animation_3s44e"),
 "THUMBLE": SubResource("Animation_qvoed"),
 "TURN": SubResource("Animation_18cr3"),
@@ -2491,6 +2521,8 @@ position = Vector2(22, -15)
 scale = Vector2(3, 3)
 target_position = Vector2(20, 0)
 collision_mask = 8
+hit_from_inside = true
+collide_with_areas = true
 
 [node name="Ledge_Grab_B" type="RayCast2D" parent="Raycasts"]
 position = Vector2(0, -38)
