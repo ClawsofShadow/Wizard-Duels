@@ -2056,7 +2056,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_cpl5n"]
 resource_name = "ROLL_FORWARD"
-length = 0.150002
+length = 0.250002
 loop_mode = 1
 step = 0.0166667
 tracks/0/type = "value"
@@ -2078,10 +2078,40 @@ tracks/1/path = NodePath(".:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0333333, 0.05, 0.0666667, 0.0833333, 0.1, 0.116667, 0.133333),
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2, 0.233333),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_htoxl"]
+resource_name = "RUN"
+length = 0.400002
+loop_mode = 1
+step = 0.0166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"DASH 1"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1336, 0.2505, 0.383333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
 }
 
 [sub_resource type="Animation" id="Animation_3s44e"]
@@ -2406,35 +2436,6 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3, 4]
 }
 
-[sub_resource type="Animation" id="Animation_htoxl"]
-resource_name = "RUN"
-length = 0.400002
-step = 0.0166667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"DASH 1"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.383333),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_y26cr"]
 _data = {
 "AIR": SubResource("Animation_nn6de"),
@@ -2484,8 +2485,13 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh8i7"]
 size = Vector2(60, 94)
 
-[node name="FOX" type="CharacterBody2D"]
+[node name="FOX" type="CharacterBody2D" node_paths=PackedStringArray("GroundL", "GroundR", "Ledge_Grab_F", "Ledge_Grab_B", "anim")]
 script = ExtResource("1_57j6t")
+GroundL = NodePath("Raycasts/GroundL")
+GroundR = NodePath("Raycasts/GroundR")
+Ledge_Grab_F = NodePath("Raycasts/Ledge_Grab_F")
+Ledge_Grab_B = NodePath("Raycasts/Ledge_Grab_B")
+anim = NodePath("Sprite/AnimationPlayer")
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("1_4lnp5")

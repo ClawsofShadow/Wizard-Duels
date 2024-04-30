@@ -5,7 +5,7 @@ var state: int
 var previous_state = null
 var states = {}
 
-@onready var parent: CharacterBody2D = get_parent()
+@onready var parent: Character = get_parent()
 
 func _physics_process(delta: float):
 	if state != null:

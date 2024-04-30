@@ -6,7 +6,6 @@ extends Area2D
 var is_grabbed = false
 
 
-
 func _ready():
 	if ledge_Side == "Left":
 		label.text = "Ledge_L"

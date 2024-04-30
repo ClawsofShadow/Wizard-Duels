@@ -1,24 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://n52qxcs71c5a"]
+[gd_scene load_steps=6 format=3 uid="uid://n52qxcs71c5a"]
 
-[ext_resource type="Texture2D" uid="uid://pgww3kxcwq1a" path="res://Stages/Smashville/Smashville.png" id="1_041r3"]
+[ext_resource type="Texture2D" uid="uid://pgww3kxcwq1a" path="res://Stages/Smashville/smashville.png" id="1_y01yi"]
+[ext_resource type="Script" path="res://Stages/Smashville/StageCamera.gd" id="2_1f14g"]
 [ext_resource type="PackedScene" uid="uid://bgf743xmdymnl" path="res://Characters/Fox.tscn" id="2_8lmml"]
 [ext_resource type="PackedScene" uid="uid://bnff7f78ad0o5" path="res://Stages/Stage Assests/Ledge.tscn" id="3_gakgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yq6jy"]
-size = Vector2(962, 38)
+size = Vector2(1377, 38)
 
-[node name="Node2D" type="Node2D"]
+[node name="Smashville" type="Node2D"]
 
 [node name="Smashville" type="Sprite2D" parent="."]
-scale = Vector2(2, 2)
-texture = ExtResource("1_041r3")
+position = Vector2(6, -94)
+scale = Vector2(1.78333, 1.78333)
+texture = ExtResource("1_y01yi")
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(960, 771)
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-position = Vector2(-959, -540)
+position = Vector2(-953.5, -619)
 shape = SubResource("RectangleShape2D_yq6jy")
 
 [node name="Label" type="Label" parent="Floor"]
@@ -33,8 +35,8 @@ position = Vector2(942, 817)
 collision_layer = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Wall"]
-position = Vector2(-1865, -1371)
-polygon = PackedVector2Array(438, 804, 497, 860, 580, 899, 1259, 898, 1346, 858, 1402, 804, 895, 804)
+position = Vector2(-1858, -1375)
+polygon = PackedVector2Array(247, 737, 464, 916, 559, 969, 1306, 959, 1468, 897, 1615, 737, 913, 734)
 
 [node name="Label" type="Label" parent="Wall"]
 offset_right = 40.0
@@ -42,7 +44,7 @@ offset_bottom = 23.0
 text = "wall"
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(940, 469)
+position = Vector2(-5, -6)
 limit_left = -1140
 limit_top = -710
 limit_right = 1150
@@ -53,13 +55,17 @@ drag_left_margin = 0.0
 drag_right_margin = 0.0
 editor_draw_limits = true
 editor_draw_drag_margin = true
+script = ExtResource("2_1f14g")
 
 [node name="FOX" parent="." instance=ExtResource("2_8lmml")]
-position = Vector2(305, 136)
+position = Vector2(489, 29)
 
 [node name="Ledge" parent="." instance=ExtResource("3_gakgy")]
-position = Vector2(129, 76)
-ledge_Side = "Right"
+position = Vector2(186, -11)
 
 [node name="Ledge2" parent="." instance=ExtResource("3_gakgy")]
-position = Vector2(-292, 65)
+position = Vector2(-711, 155)
+
+[node name="Ledge3" parent="." instance=ExtResource("3_gakgy")]
+position = Vector2(710, 154)
+ledge_Side = "Right"

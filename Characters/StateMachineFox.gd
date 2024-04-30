@@ -56,13 +56,13 @@ func get_transition(delta):
 				return states.CROUCH
 
 			if Input.get_action_strength("right_%s" % id) == 1:
-				parent.velocity.x = parent.RUNSPEED
+				parent.velocity.x = parent.RUN_SPEED
 				parent.frames()
 				parent.turn(false)
 				return states.DASH
 
 			if Input.get_action_strength("left_%s" % id) == 1:
-				parent.velocity.x = -parent.RUNSPEED
+				parent.velocity.x = -parent.RUN_SPEED
 				parent.frames()
 				parent.turn(true)
 				return states.DASH
@@ -86,12 +86,12 @@ func get_transition(delta):
 					return states.FULL_HOP
 
 		states.SHORT_HOP:
-			parent.velocity.y = -parent.JUMPFORCE
+			parent.velocity.y = -parent.JUMP_FORCE
 			parent.frames()
 			return states.AIR
 
 		states.FULL_HOP:
-			parent.velocity.y = -parent.MAX_JUMPFORCE
+			parent.velocity.y = -parent.MAX_JUMP_FORCE
 			parent.frames()
 			return states.AIR
 
@@ -104,7 +104,7 @@ func get_transition(delta):
 			elif Input.is_action_pressed("left_%s" % id):
 				if parent.velocity.x > 0:
 					parent.frames()
-				parent.velocity.x = -parent.DASHSPEED
+				parent.velocity.x = -parent.DASH_SPEED
 				if parent.frame <= parent.dash_duration-1:
 					if Input.is_action_just_pressed("down_%s" % id):
 						parent.frames()
@@ -119,7 +119,7 @@ func get_transition(delta):
 			elif Input.is_action_pressed("right_%s" % id):
 				if parent.velocity.x < 0:
 					parent.frames()
-				parent.velocity.x = parent.DASHSPEED
+				parent.velocity.x = parent.DASH_SPEED
 				if parent.frame <= parent.dash_duration-1:
 					if Input.is_action_just_pressed("down_%s" % id):
 						parent.frames()
@@ -146,7 +146,7 @@ func get_transition(delta):
 				if parent.velocity.x > 0:
 					parent.frames()
 				parent.velocity.x += -parent.AIR_ACCEL * Input.get_action_strength("left_%s" % id)
-				parent.velocity.x = clamp(parent.velocity.x, -parent.DASHSPEED*1.4, parent.velocity.x)
+				parent.velocity.x = clamp(parent.velocity.x, -parent.DASH_SPEED*1.4, parent.velocity.x)
 				if parent.frame <= parent.dash_duration*2:
 					parent.turn(false)
 					return states.MOONWALK
@@ -159,7 +159,7 @@ func get_transition(delta):
 				if parent.velocity.x < 0:
 					parent.frames()
 				parent.velocity.x += parent.AIR_ACCEL * Input.get_action_strength("right_%s" % id)
-				parent.velocity.x = clamp(parent.velocity.x, parent.velocity.x, parent.DASHSPEED * 1.5)
+				parent.velocity.x = clamp(parent.velocity.x, parent.velocity.x, parent.DASH_SPEED * 1.5)
 				if parent.frame <= parent.dash_duration*2:
 					parent.turn(true)
 					return states.MOONWALK
@@ -184,10 +184,10 @@ func get_transition(delta):
 				return states.CROUCH
 
 			if Input.get_action_strength("left_%s" % id):
-				parent.velocity.x = -parent.WALKSPEED * Input.get_action_strength("left_%s" % id)
+				parent.velocity.x = -parent.WALK_SPEED * Input.get_action_strength("left_%s" % id)
 				parent.turn(true)
 			elif Input.get_action_strength("right_%s" % id):
-				parent.velocity.x = parent.WALKSPEED * Input.get_action_strength("right_%s" % id)
+				parent.velocity.x = parent.WALK_SPEED * Input.get_action_strength("right_%s" % id)
 				parent.turn(false)
 			else:
 				parent.frames()
@@ -203,7 +203,7 @@ func get_transition(delta):
 				return states.STAND
 
 			elif parent.velocity.x > 0:
-				if parent.velocity.x > parent.RUNSPEED:
+				if parent.velocity.x > parent.RUN_SPEED:
 					parent.velocity.x += -(parent.TRACTION*4)
 					parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
 				else:
@@ -211,7 +211,7 @@ func get_transition(delta):
 					parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
 
 			elif parent.velocity.x < 0:
-				if abs(parent.velocity.x) > parent.RUNSPEED:
+				if abs(parent.velocity.x) > parent.RUN_SPEED:
 					parent.velocity.x += (parent.TRACTION*4)
 					parent.velocity.x = clamp(parent.velocity.x, parent.velocity.x, 0)
 				else:
@@ -229,14 +229,14 @@ func get_transition(delta):
 
 			if Input.get_action_strength("left_%s" % id):
 				if parent.velocity.x <= 0:
-					parent.velocity.x = -parent.RUNSPEED
+					parent.velocity.x = -parent.RUN_SPEED
 					parent.turn(true)
 				else:
 					parent.frames()
 					return states.TURN
 			elif Input.get_action_strength("right_%s" % id):
 				if parent.velocity.x >= 0:
-					parent.velocity.x = parent.RUNSPEED
+					parent.velocity.x = parent.RUN_SPEED
 					parent.turn(false)
 				else:
 					parent.frames()
@@ -267,15 +267,15 @@ func get_transition(delta):
 
 		states.AIR:
 			AIRMOVEMENT()
-			if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+			if Input.is_action_just_pressed("jump_%s" % id) and parent.air_jumps > 0:
 				parent.fastfall = false
 				parent.velocity.x = 0
-				parent.velocity.y = -parent.DOUBLEJUMPFORCE
-				parent.airJump -= 1
+				parent.velocity.y = -parent.DOUBLE_JUMP_FORCE
+				parent.air_jumps -= 1
 				if Input.is_action_pressed("left_%s" % id):
-					parent.velocity.x = -parent.MAXAIRSPEED
+					parent.velocity.x = -parent.MAX_AIR_SPEED
 				elif Input.is_action_pressed("right_%s" % id):
-					parent.velocity.x = parent.MAXAIRSPEED
+					parent.velocity.x = parent.MAX_AIR_SPEED
 
 		states.LANDING:
 			
@@ -384,6 +384,12 @@ func get_transition(delta):
 				return states.STAND
 
 		states.LEDGE_JUMP:
+			if parent.frame == 1:
+				parent.position.y -= 20
+				parent.velocity.y -= parent.LEDGE_JUMP_FORCE
+				parent.velocity.x += parent.LEDGE_JUMP_DIRECTION_FORCE*parent.direction()
+				return states.LEDGE_JUMP
+			
 			if parent.frame > 14:
 				if Input.is_action_just_pressed("attack_%s" % id):
 					parent.frames()
@@ -399,45 +405,41 @@ func get_transition(delta):
 			if parent.frame == 20:
 				parent.catch = false
 				parent.position.y -= 20
-				if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+				if Input.is_action_just_pressed("jump_%s" % id) and parent.air_jumps > 0:
 					parent.fastfall = false
-					parent.velocity.y = -parent.DOUBLEJUMPFORCE
+					parent.velocity.y = -parent.DOUBLE_JUMP_FORCE
 					parent.velocity.x = 0
-					parent.airJump -= 1
+					parent.air_jumps -= 1
 					parent.frames()
 					return states.AIR
 
-			if parent.frame == 15:
-				parent.position.y -= 20
-				parent.velocity.y -= parent.DOUBLEJUMPFORCE
-				parent.velocity.x += 220*parent.direction()
-				if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
+			if parent.frame == 15 or parent.frame == 20:
+				parent.frames()
+				return states.AIR
+	
+			if Input.is_action_just_pressed("jump_%s" % id) and parent.air_jumps > 0:
+				parent.fastfall = false
+				parent.velocity.y = -parent.DOUBLE_JUMP_FORCE
+				parent.velocity.x = 0
+				parent.air_jumps -= 1
+				parent.frames()
+				return states.AIR
+				
+			if Input.is_action_just_pressed("attack_%s"  % id):
+				parent.frames()
+				return states.AIR_ATTACK
+			elif parent.frame > 15 and parent.frame < 20:
+				parent.velocity.y += parent.FALL_SPEED
+				if Input.is_action_just_pressed("jump_%s" % id) and parent.air_jumps > 0:
 					parent.fastfall = false
-					parent.velocity.y = -parent.DOUBLEJUMPFORCE
+					parent.velocity.y = -parent.DOUBLE_JUMP_FORCE
 					parent.velocity.x = 0
-					parent.airJump -= 1
+					parent.air_jumps -= 1
 					parent.frames()
 					return states.AIR
-				if Input.is_action_just_pressed("attack_%s"  % id):
+				if Input.is_action_just_pressed("attack_%s" % id):
 					parent.frames()
 					return states.AIR_ATTACK
-
-				elif parent.frame > 15 and parent.frame < 20:
-					parent.velocity.y += parent.FALLSPEED
-					if Input.is_action_just_pressed("jump_%s" % id) and parent.airJump > 0:
-						parent.fastfall = false
-						parent.velocity.y = -parent.DOUBLEJUMPFORCE
-						parent.velocity.x = 0
-						parent.airJump -= 1
-						parent.frames()
-						return states.AIR
-					if Input.is_action_just_pressed("attack_%s" % id):
-						parent.frames()
-						return states.AIR_ATTACK
-
-				if parent.frame == 20:
-					parent.frames()
-					return states.AIR
 
 		states.LEDGE_ROLL:
 			if parent.frame == 1:
@@ -529,16 +531,16 @@ func states_includes(state_array):
 
 func AIRMOVEMENT():
 	
-	if parent.velocity.y < parent.FALLINGSPEED:
-		parent.velocity.y += parent.FALLSPEED
-	if Input.is_action_pressed("down_%s" % id): # and parent.down_buffer == 1 and parent.velocity.y > -150 and not parent.fastfall:
-		parent.velocity.y = parent.MAXFALLSPEED
+	if parent.velocity.y < parent.FALLING_SPEED:
+		parent.velocity.y += parent.FALL_SPEED
+	if Input.is_action_pressed("down_%s" % id): #and parent.down_buffer == 1 and parent.velocity.y > -150 and not parent.fastfall:
+		parent.velocity.y = parent.MAX_FALL_SPEED
 		parent.fastfall = true
 	if parent.fastfall == true:
 		parent.set_collision_mask_value(2, false)
-		parent.velocity.y = parent.MAXFALLSPEED
+		parent.velocity.y = parent.MAX_FALL_SPEED
 
-	if abs(parent.velocity.x) >= abs(parent.MAXAIRSPEED):
+	if abs(parent.velocity.x) >= abs(parent.MAX_AIR_SPEED):
 		if parent.velocity.x > 0:
 			if Input.is_action_pressed("left_%s" % id):
 				parent.velocity.x += -parent.AIR_ACCEL
@@ -551,7 +553,7 @@ func AIRMOVEMENT():
 				parent.velocity.x += parent.AIR_ACCEL
 
 
-	elif abs(parent.velocity.x) < abs(parent.MAXAIRSPEED):
+	elif abs(parent.velocity.x) < abs(parent.MAX_AIR_SPEED):
 		if Input.is_action_pressed("left_%s" % id):
 			parent.velocity.x += -parent.AIR_ACCEL
 		if Input.is_action_pressed("right_%s" % id):
@@ -589,7 +591,6 @@ func Falling():
 func Ledge():
 	if states_includes([states.AIR]):
 		if (parent.Ledge_Grab_F.is_colliding()):
-			print('colliding with ledge')
 			var collider = parent.Ledge_Grab_F.get_collider()
 			if collider.get_node('Label').text == 'Ledge_L' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
 				if states_includes([states.AIR]):
@@ -606,6 +607,7 @@ func Ledge():
 					collider.is_grabbed = true
 					parent.last_ledge = collider
 					return true
+					parent.GRAVITY = true
 
 			if collider.get_node('Label').text == 'Ledge_R' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
 				if states_includes([states.AIR]):
@@ -622,6 +624,7 @@ func Ledge():
 					collider.is_grabbed = true
 					parent.last_ledge = collider
 					return true
+					parent.GRAVITY = true
 
 		if(parent.Ledge_Grab_B.is_colliding()):
 			var collider = parent.Ledge_Grab_B.get_collider()
@@ -640,6 +643,7 @@ func Ledge():
 					collider.is_grabbed = true
 					parent.last_ledge = collider
 					return true
+					parent.GRAVITY = true
 
 			if collider.get_node('Label').text == 'Ledge_R' and !Input.get_action_strength("down_%s" % id) > 0.6 and parent.regrab == 0 && !collider.is_grabbed:
 				if states_includes([states.AIR]):
@@ -656,3 +660,4 @@ func Ledge():
 					collider.is_grabbed = true
 					parent.last_ledge = collider
 					return true
+					parent.GRAVITY = true
