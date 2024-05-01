@@ -10,6 +10,7 @@ var air_jumps: int = 0
 var last_ledge: Node = null
 var regrab: int = 30
 var catch: bool = false
+var perfect_wavedash_modifier = .5
 
 @export var MAX_AIR_JUMPS = 1
 @export var RUN_SPEED = 340

@@ -36,7 +36,7 @@ collision_layer = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Wall"]
 position = Vector2(-1858, -1375)
-polygon = PackedVector2Array(247, 737, 464, 916, 559, 969, 1306, 959, 1468, 897, 1615, 737, 913, 734)
+polygon = PackedVector2Array(236, 734, 464, 916, 559, 969, 1306, 959, 1468, 897, 1612, 735, 913, 734)
 
 [node name="Label" type="Label" parent="Wall"]
 offset_right = 40.0
