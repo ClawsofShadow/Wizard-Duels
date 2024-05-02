@@ -19,6 +19,9 @@ func _ready():
 	add_state('LEDGE_CLIMB')
 	add_state('LEDGE_JUMP')
 	add_state('LEDGE_ROLL')
+	add_state('GROUND_ATTACK')
+	add_state('DOWN_TILT')
+	add_state('JAB')
 	call_deferred("set_state", states.STAND)
 
 func state_logic(delta):
@@ -42,6 +45,10 @@ func get_transition(delta):
 		return states.LEDGE_CATCH
 	else:
 		parent.reset_ledge()
+
+	if Input.is_action_just_pressed("attack_%s" % id) && TILT() == true:
+		parent.frames()
+		return states.GROUND_ATTACK
 
 	match state:
 		
@@ -477,55 +484,118 @@ func get_transition(delta):
 				parent.frames()
 				return states.STAND
 
+		states.GROUND_ATTACK:
+			if Input.is_action_pressed("up_%s" % id):
+				parent.frames()
+				return states.UP_TILT
+
+			if Input.is_action_pressed("down_%s" % id):
+				parent.frames()
+				return states.DOWN_TILT
+
+			if Input.is_action_pressed("left_%s" % id):
+				parent.turn(true)
+				parent.frames()
+				return states.FORWARD_TILT
+
+			if Input.is_action_pressed("right_%s" % id):
+				parent.turn(false)
+				parent.frames()
+				return states.FORWARD_TILT
+			parent.frames()
+			return states.DOWN_TILT
+
+		states.DOWN_TILT:
+			if parent.frame == 0:
+				parent.DOWN_TILT()
+
+			if parent.frame >= 1:
+				if parent.velocity.x > 0:
+					parent.velocity.x += -parent.TRACTION*3
+					parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
+				elif parent.velocity.x < 0:
+					parent.velocity.x += parent.TRACTION*3
+					parent.velocity.x = clamp(parent.velocity.x, parent.velocity.x, 0)
+			if parent.DOWN_TILT() == true:
+				if Input.is_action_pressed("down_%s" % id):
+					parent.frames()
+					return states.CROUCH
+				else:
+					parent.frames()
+					return states.STAND
+
 func enter_state(new_state, old_state):
 	match new_state:
 		states.STAND:
 			parent.play_animation('IDLE')
+			parent.states.text = str('STAND')
 			return false
 		states.DASH:
 			parent.play_animation('DASH')
+			parent.states.text = str('DASH')
 			return false
 		states.MOONWALK:
 			parent.play_animation('WALK')
+			parent.states.text = str('MOONWALK')
 			return false
 		states.TURN:
 			parent.play_animation('TURN')
+			parent.states.text = str('TURN')
 			return false
 		states.CROUCH:
 			parent.play_animation('CROUCH')
+			parent.states.text = str('CROUCH')
 			return false
 		states.RUN:
 			parent.play_animation('RUN')
+			parent.states.text = str('RUN')
 			return false
 		states.JUMP_SQUAT:
 			parent.play_animation('JUMP_SQUAT')
+			parent.states.text = str('JUMP_SQUAT')
 			return false
 		states.SHORT_HOP:
 			parent.play_animation('AIR')
+			parent.states.text = str('SHORT_HOP')
 			return false
 		states.FULL_HOP:
 			parent.play_animation('AIR')
+			parent.states.text = str('FULL_HOP')
 			return false
 		states.AIR:
 			parent.play_animation('AIR')
+			parent.states.text = str('AIR')
 			return false
 		states.LANDING:
 			parent.play_animation('LANDING')
+			parent.states.text = str('LANDING')
 			return false
 		states.LEDGE_CATCH:
 			parent.play_animation('LEDGE_CATCH')
+			parent.states.text = str('LEDGE_CATCH')
 			return false
 		states.LEDGE_HOLD:
 			parent.play_animation('LEDGE_CATCH')
+			parent.states.text = str('LEDGE_HOLD')
 			return false
 		states.LEDGE_JUMP:
 			parent.play_animation('AIR')
+			parent.states.text = str('LEDGE_JUMP')
 			return false
 		states.LEDGE_CLIMB:
 			parent.play_animation('ROLL_FORWARD')
+			parent.states.text = str('LEDGE_CLIMB')
 			return false
 		states.LEDGE_ROLL:
 			parent.play_animation('ROLL_FORWARD')
+			parent.states.text = str('LEDGE_ROLL')
+			return false
+		states.GROUND_ATTACK:
+			parent.states.text = str('GROUND_ATTACK')
+			return false
+		states.DOWN_TILT:
+			parent.play_animation('DOWN_TILT')
+			parent.states.text = str('DOWN_TILT')
 			return false
 
 func exit_state(old_state, new_state):
@@ -536,6 +606,10 @@ func states_includes(state_array):
 		if state == each_state:
 			return true
 	return false
+
+func TILT():
+	if states_includes([states.STAND,states.MOONWALK,states.DASH,states.RUN,states.WALK,states.CROUCH]):
+		return true
 
 func AIRMOVEMENT():
 	

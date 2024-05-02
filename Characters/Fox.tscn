@@ -1,10 +1,11 @@
-[gd_scene load_steps=223 format=3 uid="uid://bgf743xmdymnl"]
+[gd_scene load_steps=225 format=3 uid="uid://bgf743xmdymnl"]
 
 [ext_resource type="Texture2D" uid="uid://cu6xbjaem7egy" path="res://Characters/Fox/sprites/idle_strip10.png" id="1_0p8k7"]
 [ext_resource type="Script" path="res://Characters/StateMachineFox.gd" id="1_4lnp5"]
 [ext_resource type="Texture2D" uid="uid://csa2xj5odv7na" path="res://Characters/Fox/sprites/bair_strip4.png" id="1_4ouca"]
 [ext_resource type="Script" path="res://Characters/Fox.gd" id="1_57j6t"]
 [ext_resource type="Texture2D" uid="uid://bfjhg3fe0475c" path="res://Characters/Fox/sprites/doublejump_strip5.png" id="1_uxfvu"]
+[ext_resource type="PackedScene" uid="uid://jgc220alke2" path="res://Hitbox/hitbox.tscn" id="2_owa2i"]
 [ext_resource type="Texture2D" uid="uid://eqjumcsuxf08" path="res://Characters/Fox/sprites/airdodge_strip6.png" id="2_pfe3p"]
 [ext_resource type="Texture2D" uid="uid://cvmbeqe2aykkv" path="res://Characters/Fox/sprites/crouch_strip4.png" id="4_ut5np"]
 [ext_resource type="Texture2D" uid="uid://ckc5d06feaxkf" path="res://Characters/Fox/sprites/dair_strip4.png" id="5_cvx5n"]
@@ -1552,7 +1553,7 @@ tracks/1/path = NodePath(".:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0833333, 0.15),
+"times": PackedFloat32Array(0, 0.05, 0.1),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [0, 1, 2]
@@ -2485,8 +2486,12 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh8i7"]
 size = Vector2(60, 94)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5hfqq"]
+size = Vector2(67, 34)
+
 [node name="FOX" type="CharacterBody2D" node_paths=PackedStringArray("GroundL", "GroundR", "Ledge_Grab_F", "Ledge_Grab_B", "anim")]
 script = ExtResource("1_57j6t")
+hitbox = ExtResource("2_owa2i")
 GroundL = NodePath("Raycasts/GroundL")
 GroundR = NodePath("Raycasts/GroundR")
 Ledge_Grab_F = NodePath("Raycasts/Ledge_Grab_F")
@@ -2551,3 +2556,7 @@ offset_right = 20.0
 offset_bottom = -50.0
 text = "Test"
 horizontal_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(63.5, 31)
+shape = SubResource("RectangleShape2D_5hfqq")

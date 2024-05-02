@@ -1,6 +1,17 @@
 extends Character
 class_name Fox
 
+func create_hitbox(width, height, damage, angle, base_kb, kb_scaling, duration, type, points, angle_flipper, hitlag = 1):
+	var hitbox_instance = hitbox.instantiate()
+	self.add_child(hitbox_instance)
+	if direction() == 1:
+		hitbox_instance.set_parameters(width, height, damage, angle, base_kb, kb_scaling, duration, type, points, angle_flipper, hitlag)
+	else:
+		var flip_x_points = Vector2(-points.x, points.y)
+		hitbox_instance.set_parameters(width, height, damage, -angle + 180, base_kb, kb_scaling, duration, type, flip_x_points, angle_flipper, hitlag)
+	return hitbox_instance
+	
+
 func turn(direction):
 	var dir = 0
 	if direction:
@@ -36,3 +47,10 @@ func _ready():
 
 func _physics_process(delta):
 	$Frames.text = str(frame)
+	selfState = states
+
+func DOWN_TILT():
+	if frame == 5:
+		call_deferred("create_hitbox", 40, 20, 8, 90, 3, 120, 3, 'normal', Vector2(64,32), 0, 1)
+	if frame >= 10:
+		return true

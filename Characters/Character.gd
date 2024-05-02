@@ -1,16 +1,27 @@
 extends CharacterBody2D
 class_name Character
 
+var states = {}
+
+#Jump
 var dash_duration = 10
 var jump_squat: int = 3
 var landing_frames: int = 0
 var lag_frames: int = 0
 var fastfall: bool = false
 var air_jumps: int = 0
+
+#Ledges
 var last_ledge: Node = null
 var regrab: int = 30
 var catch: bool = false
+
+#Wavedash
 var perfect_wavedash_modifier = .5
+
+#Hitbox
+@export var hitbox: PackedScene
+var selfState
 
 @export var MAX_AIR_JUMPS = 1
 @export var RUN_SPEED = 340
