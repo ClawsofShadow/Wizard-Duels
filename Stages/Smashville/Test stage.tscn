@@ -58,7 +58,12 @@ editor_draw_drag_margin = true
 script = ExtResource("2_1f14g")
 
 [node name="FOX" parent="." instance=ExtResource("2_8lmml")]
-position = Vector2(489, 29)
+position = Vector2(504, 18)
+id = 1
+
+[node name="FOX3" parent="." instance=ExtResource("2_8lmml")]
+position = Vector2(-348, 14)
+id = 2
 
 [node name="Ledge" parent="." instance=ExtResource("3_gakgy")]
 position = Vector2(186, -11)

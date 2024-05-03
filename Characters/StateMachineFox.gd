@@ -1,7 +1,10 @@
 extends StateMachine
-@export var id = 1
+class_name StateMachineFox
+var id: int
+#@onready var id = parent.id
 
 func _ready():
+	id = parent.id
 	add_state('STAND')
 	add_state('JUMP_SQUAT')
 	add_state('SHORT_HOP')
@@ -19,9 +22,11 @@ func _ready():
 	add_state('LEDGE_CLIMB')
 	add_state('LEDGE_JUMP')
 	add_state('LEDGE_ROLL')
+	add_state('HITSTUN')
 	add_state('GROUND_ATTACK')
 	add_state('DOWN_TILT')
-	add_state('JAB')
+	add_state('UP_TILT')
+	add_state('FORWARD_TILT')
 	call_deferred("set_state", states.STAND)
 
 func state_logic(delta):
@@ -524,6 +529,38 @@ func get_transition(delta):
 					parent.frames()
 					return states.STAND
 
+		states.UP_TILT:
+			pass
+
+		states.FORWARD_TILT:
+			pass
+
+		states.HITSTUN:
+			if parent.knockback >= 3:
+				var bounce = parent.move_and_collide(parent.velocity * delta)
+				if bounce:
+					parent.velocity = parent.velocity.bounce(bounce.get_normal())  * .8
+					parent.hitstun = round(parent.hitstun * .8)
+			if parent.velocity.y < 0:
+				parent.velocity.y += parent.vdecay * 0.5 * Engine.time_scale
+				parent.velocity.y = clamp(parent.velocity.y, parent.velocity.y, 0)
+			if parent.velocity.x < 0:
+				parent.velocity.x += (parent.hdecay) * 0.4 * -1 * Engine.time_scale
+				parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
+			elif parent.velocity.x > 0:
+				parent.velocity.x -= parent.hdecay * 0.4 * Engine.time_scale
+				parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
+
+			if parent.frame == parent.hitstun:
+				if parent.knockback >= 24:
+					parent.frames()
+					return states.AIR
+				else:
+					parent.frames()
+					return states.AIR
+			elif parent.frame > 60 * 5:
+				return states.AIR
+
 func enter_state(new_state, old_state):
 	match new_state:
 		states.STAND:
@@ -596,6 +633,18 @@ func enter_state(new_state, old_state):
 		states.DOWN_TILT:
 			parent.play_animation('DOWN_TILT')
 			parent.states.text = str('DOWN_TILT')
+			return false
+		states.UP_TILT:
+			parent.play_animation('UP_TILT')
+			parent.states.text = str('UP_TILT')
+			return false
+		states.FORWARD_TILT:
+			parent.play_animation('FORWARD_TILT')
+			parent.states.text = str('FORWARD_TILT')
+			return false
+		states.HITSTUN:
+			parent.play_animation('HITSTUN')
+			parent.states.text = str('HITSTUN')
 			return false
 
 func exit_state(old_state, new_state):

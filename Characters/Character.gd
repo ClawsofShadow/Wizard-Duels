@@ -2,6 +2,17 @@ extends CharacterBody2D
 class_name Character
 
 var states = {}
+@export var id: int
+
+@export var percentage = 0
+@export var stocks = 3
+@export var weight = 100
+
+var hdecay
+var vdecay
+var knockback
+var hitstun
+var connected:bool
 
 #Jump
 var dash_duration = 10
