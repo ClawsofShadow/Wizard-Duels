@@ -27,6 +27,12 @@ func _ready():
 	add_state('DOWN_TILT')
 	add_state('UP_TILT')
 	add_state('FORWARD_TILT')
+	add_state('AIR_ATTACK')
+	add_state('NAIR')
+	add_state('UAIR')
+	add_state('BAIR')
+	add_state('FAIR')
+	add_state('DAIR')
 	call_deferred("set_state", states.STAND)
 
 func state_logic(delta):
@@ -54,6 +60,34 @@ func get_transition(delta):
 	if Input.is_action_just_pressed("attack_%s" % id) && TILT() == true:
 		parent.frames()
 		return states.GROUND_ATTACK
+
+	if Input.is_action_just_pressed("attack_%s" % id) && AIREAL() == true:
+		if Input.is_action_pressed("up_%s" % id):
+			parent.frames()
+			return states.UAIR
+		if Input.is_action_pressed("down_%s" % id):
+			parent.frames()
+			return states.DAIR
+			match parent.direction():
+
+				1:
+					if Input.is_action_pressed("left_%s" % id):
+						parent.frames()
+						return states.BAIR
+					if Input.is_action_pressed("right_%s" % id):
+						parent.frames()
+						return states.FAIR
+
+				-1:
+					if Input.is_action_pressed("right_%s" % id):
+						parent.frames()
+						return states.BAIR
+					if Input.is_action_pressed("left_%s" % id):
+						parent.frames()
+						return states.FAIR
+
+		parent.frames()
+		return states.NAIR
 
 	match state:
 		
@@ -561,6 +595,98 @@ func get_transition(delta):
 			elif parent.frame > 60 * 5:
 				return states.AIR
 
+		states.AIR_ATTACK:
+			AIRMOVEMENT()
+			if Input.is_action_pressed("up_%s" % id):
+				parent.frames()
+				return states.UAIR
+
+			if Input.is_action_pressed("down_%s" % id):
+				parent.frames()
+				return states.DAIR
+			match parent.direction():
+
+				1:
+					if Input.is_action_pressed("left_%s" % id):
+						parent.frames()
+						return states.BAIR
+
+					if Input.is_action_pressed("right_%s" % id):
+						parent.frames()
+						return states.FAIR
+
+				-1:
+					if Input.is_action_pressed("right_%s" % id):
+						parent.frames()
+						return states.BAIR
+
+					if Input.is_action_pressed("left_%s" % id):
+						parent.frames()
+						return states.FAIR
+
+			parent.frames()
+			return states.NAIR
+
+		states.NAIR:
+			AIRMOVEMENT()
+			if parent.frame == 0:
+				print('nair')
+				parent.NAIR()
+			if parent.NAIR() == true:
+				parent.lag_frames = 0
+				parent.frames()
+				return states.AIR
+
+		states.UAIR:
+			AIRMOVEMENT()
+			if parent.frame == 0:
+				print('uair')
+				parent.UAIR()
+			if parent.UAIR() == true:
+				parent.lag_frames = 0
+				parent.frames()
+				return states.AIR
+
+		states.BAIR:
+			AIRMOVEMENT()
+			if parent.frame == 0:
+				print('bair')
+				parent.BAIR()
+			if parent.BAIR() == true:
+				parent.lag_frames = 0
+				parent.frames()
+				return states.AIR
+
+		states.FAIR:
+			AIRMOVEMENT()
+			if Input.is_action_just_pressed("jump_%s" % id) and parent.air_jumps > 0:
+				parent.fastfall = false
+				parent.velocity.x = 0
+				parent.velocity.y = -parent.DOUBLE_JUMP_FORCE
+				parent.air_jumps -= 1
+				if Input.is_action_pressed("left_%s" % id):
+					parent.velocity.x = -parent.MAX_AIR_SPEED
+				elif Input.is_action_pressed("right_%s" % id):
+					parent.velocity.x = parent.MAX_AIR_SPEED
+				return states.AIR
+			if parent.frame == 0:
+				print('fair')
+				parent.FAIR()
+			if parent.FAIR() == true:
+				parent.lag_frames = 30
+				parent.frames()
+				return states.FAIR
+
+		states.DAIR:
+			AIRMOVEMENT()
+			if parent.frame == 0:
+				print('dair')
+				parent.DAIR()
+			if parent.DAIR() == true:
+				parent.lag_frames = 0
+				parent.frames()
+				return states.AIR
+
 func enter_state(new_state, old_state):
 	match new_state:
 		states.STAND:
@@ -646,6 +772,29 @@ func enter_state(new_state, old_state):
 			parent.play_animation('HITSTUN')
 			parent.states.text = str('HITSTUN')
 			return false
+		states.AIR_ATTACK:
+			parent.states.text = str('AIR_ATTACK')
+			return false
+		states.NAIR:
+			parent.play_animation('NAIR')
+			parent.states.text = str('NAIR')
+			return false
+		states.UAIR:
+			parent.play_animation('UAIR')
+			parent.states.text = str('UAIR')
+			return false
+		states.BAIR:
+			parent.play_animation('BAIR')
+			parent.states.text = str('BAIR')
+			return false
+		states.FAIR:
+			parent.play_animation('FAIR')
+			parent.states.text = str('FAIR')
+			return false
+		states.DAIR:
+			parent.play_animation('DAIR')
+			parent.states.text = str('DAIR')
+			return false
 
 func exit_state(old_state, new_state):
 	pass
@@ -659,6 +808,13 @@ func states_includes(state_array):
 func TILT():
 	if states_includes([states.STAND,states.MOONWALK,states.DASH,states.RUN,states.WALK,states.CROUCH]):
 		return true
+
+func AIREAL():
+	if states_includes([states.AIR, states.NAIR, states.DAIR]):
+		if !(parent.GroundL.is_colliding() and parent.GroundR.is_colliding()):
+			return true
+		else:
+			return false
 
 func AIRMOVEMENT():
 	
@@ -697,7 +853,7 @@ func AIRMOVEMENT():
 			parent.velocity.x += -parent.AIR_ACCEL/5
 
 func Landing():
-	if states_includes([states.AIR]):
+	if states_includes([states.AIR, states.NAIR, states.UAIR, states.DAIR, states.BAIR, states.FAIR]):
 		if (parent.GroundL.is_colliding()) and parent.velocity.y > 0:
 			var collider = parent.GroundL.get_collider()
 			parent.frame = 0
