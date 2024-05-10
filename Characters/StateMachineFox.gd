@@ -524,23 +524,23 @@ func get_transition(delta):
 				return states.STAND
 
 		states.GROUND_ATTACK:
-			if Input.is_action_pressed("up_%s" % id):
-				parent.frames()
-				return states.UP_TILT
+			#if Input.is_action_pressed("up_%s" % id):
+				#parent.frames()
+				#return states.UP_TILT
 
 			if Input.is_action_pressed("down_%s" % id):
 				parent.frames()
 				return states.DOWN_TILT
 
-			if Input.is_action_pressed("left_%s" % id):
-				parent.turn(true)
-				parent.frames()
-				return states.FORWARD_TILT
+			#if Input.is_action_pressed("left_%s" % id):
+				#parent.turn(true)
+				#parent.frames()
+				#return states.FORWARD_TILT
 
-			if Input.is_action_pressed("right_%s" % id):
-				parent.turn(false)
-				parent.frames()
-				return states.FORWARD_TILT
+			#if Input.is_action_pressed("right_%s" % id):
+				#parent.turn(false)
+				#parent.frames()
+				#return states.FORWARD_TILT
 			parent.frames()
 			return states.DOWN_TILT
 
@@ -761,13 +761,15 @@ func enter_state(new_state, old_state):
 			parent.states.text = str('DOWN_TILT')
 			return false
 		states.UP_TILT:
-			parent.play_animation('UP_TILT')
-			parent.states.text = str('UP_TILT')
-			return false
+			pass
+			#parent.play_animation('UP_TILT')
+			#parent.states.text = str('UP_TILT')
+			#return false
 		states.FORWARD_TILT:
-			parent.play_animation('FORWARD_TILT')
-			parent.states.text = str('FORWARD_TILT')
-			return false
+			pass
+			#parent.play_animation('FORWARD_TILT')
+			#parent.states.text = str('FORWARD_TILT')
+			#return false
 		states.HITSTUN:
 			parent.play_animation('HITSTUN')
 			parent.states.text = str('HITSTUN')

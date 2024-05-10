@@ -14,6 +14,7 @@ config/name="Wizard Duels: Wizards Fighting Game"
 run/main_scene="res://Stages/Smashville/Test stage.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0.431373, 0.109804, 0.0470588, 1)
+boot_splash/image="res://Sword and Shield.png"
 config/icon="res://icon.svg"
 boot_splash/minimum_display_time=3
 

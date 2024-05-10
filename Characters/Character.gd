@@ -12,6 +12,7 @@ var hdecay
 var vdecay
 var knockback
 var hitstun
+var in_air
 var connected:bool
 
 #Jump
