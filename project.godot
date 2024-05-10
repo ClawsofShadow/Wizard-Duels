@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Wizard Duels: Wizards Fighting Game"
+config/version="1"
 run/main_scene="res://Stages/Smashville/Test stage.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0.431373, 0.109804, 0.0470588, 1)

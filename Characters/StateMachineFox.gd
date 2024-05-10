@@ -89,6 +89,10 @@ func get_transition(delta):
 		parent.frames()
 		return states.NAIR
 
+	if Input.is_action_pressed("shield_%s" % id) && AIREAL() && parent.cooldown == 0:
+		parent.l_cancel = 11
+		parent.cooldown = 40
+
 	match state:
 		
 		states.STAND:
@@ -332,10 +336,10 @@ func get_transition(delta):
 					parent.velocity.x = parent.MAX_AIR_SPEED
 
 		states.LANDING:
-			
+			if parent.frame == 1:
+				if parent.l_cancel > 0:
+					parent.lag_frames = floor(parent.lag_frames / 2)
 			if parent.frame <= parent.landing_frames + parent.lag_frames:
-				if parent.frame == 1:
-					pass
 				if parent.velocity.x > 0:
 					parent.velocity.x = parent.velocity.x - parent.TRACTION/2
 					parent.velocity.x = clamp(parent.velocity.x,0, parent.velocity.x)
@@ -636,6 +640,12 @@ func get_transition(delta):
 				parent.lag_frames = 0
 				parent.frames()
 				return states.AIR
+			elif parent.frame < 5:
+				parent.lag_frames = 0
+			elif parent.frame > 15:
+				parent.lag_frames = 0
+			else:
+				parent.lag_frames = 7
 
 		states.UAIR:
 			AIRMOVEMENT()
@@ -646,6 +656,8 @@ func get_transition(delta):
 				parent.lag_frames = 0
 				parent.frames()
 				return states.AIR
+			else:
+				parent.lag_frames = 13
 
 		states.BAIR:
 			AIRMOVEMENT()
@@ -656,6 +668,8 @@ func get_transition(delta):
 				parent.lag_frames = 0
 				parent.frames()
 				return states.AIR
+			else:
+				parent.lag_frames = 9
 
 		states.FAIR:
 			AIRMOVEMENT()
@@ -676,6 +690,8 @@ func get_transition(delta):
 				parent.lag_frames = 30
 				parent.frames()
 				return states.FAIR
+			else:
+				parent.lag_frames = 18
 
 		states.DAIR:
 			AIRMOVEMENT()
@@ -686,6 +702,8 @@ func get_transition(delta):
 				parent.lag_frames = 0
 				parent.frames()
 				return states.AIR
+			else:
+				parent.lag_frames = 17
 
 func enter_state(new_state, old_state):
 	match new_state:

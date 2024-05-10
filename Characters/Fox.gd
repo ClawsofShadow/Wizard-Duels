@@ -10,7 +10,6 @@ func create_hitbox(width, height, damage, angle, base_kb, kb_scaling, duration, 
 		var flip_x_points = Vector2(-points.x, points.y)
 		hitbox_instance.set_parameters(width, height, damage, -angle + 180, base_kb, kb_scaling, duration, type, flip_x_points, angle_flipper, hitlag)
 	return hitbox_instance
-	
 
 func turn(direction):
 	var dir = 0

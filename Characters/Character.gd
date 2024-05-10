@@ -15,6 +15,9 @@ var hitstun
 var in_air
 var connected:bool
 
+var l_cancel = 0
+var cooldown = 0
+
 #Jump
 var dash_duration = 10
 var jump_squat: int = 3
@@ -65,3 +68,7 @@ var selfState
 var frame = 0
 func updateframes(delta):
 	frame += 1
+	l_cancel -= floor(delta * 60)
+	clamp(l_cancel, 0, l_cancel)
+	cooldown -= 1
+	cooldown = clamp(cooldown, 0, cooldown)
