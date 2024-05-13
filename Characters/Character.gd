@@ -7,6 +7,7 @@ var states = {}
 @export var percentage = 0
 @export var stocks = 3
 @export var weight = 100
+var freezeframes = 0
 
 var hdecay
 var vdecay
@@ -17,6 +18,11 @@ var connected:bool
 
 var l_cancel = 0
 var cooldown = 0
+
+var hit_pause = 0
+var hit_pause_dir = 0
+var temp_pos = Vector2(0,0)
+var temp_vel = Vector2(0,0)
 
 #Jump
 var dash_duration = 10
@@ -67,8 +73,11 @@ var selfState
 
 var frame = 0
 func updateframes(delta):
-	frame += 1
+	frame += floor(delta * 60)
 	l_cancel -= floor(delta * 60)
 	clamp(l_cancel, 0, l_cancel)
 	cooldown -= 1
 	cooldown = clamp(cooldown, 0, cooldown)
+	if freezeframes > 0:
+		freezeframes -= floor(delta * 60)
+	freezeframes = clamp(freezeframes, 0, freezeframes)

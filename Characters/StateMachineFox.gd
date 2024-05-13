@@ -33,6 +33,7 @@ func _ready():
 	add_state('BAIR')
 	add_state('FAIR')
 	add_state('DAIR')
+	add_state('HITFREEZE')
 	call_deferred("set_state", states.STAND)
 
 func state_logic(delta):
@@ -40,6 +41,7 @@ func state_logic(delta):
 	parent._physics_process(delta)
 	if parent.regrab > 0:
 		parent.regrab -= 1
+	parent.hit_pauses(delta)
 
 func get_transition(delta):
 	#parent.move_and_slide_with_snap(parent.velocity*2,Vector2.ZERO,Vector2.UP)
@@ -586,7 +588,7 @@ func get_transition(delta):
 				parent.velocity.x += (parent.hdecay) * 0.4 * -1 * Engine.time_scale
 				parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
 			elif parent.velocity.x > 0:
-				parent.velocity.x -= parent.hdecay * 0.4 * Engine.time_scale
+				parent.velocity.x -= parent.hdecay * 0.4 * Engine.time_scale 
 				parent.velocity.x = clamp(parent.velocity.x, 0, parent.velocity.x)
 
 			if parent.frame == parent.hitstun:
@@ -705,6 +707,16 @@ func get_transition(delta):
 			else:
 				parent.lag_frames = 17
 
+		states.HITFREEZE:
+			if parent.freezeframes == 0:
+				parent.frames()
+				parent.veloctiy.x = kbx
+				parent.veloctiy.y = kby
+				parent.hdecay = hd
+				parent.vdecay = vd
+				return states.HITSTUN
+			parent.position = pos
+
 func enter_state(new_state, old_state):
 	match new_state:
 		states.STAND:
@@ -814,6 +826,10 @@ func enter_state(new_state, old_state):
 		states.DAIR:
 			parent.play_animation('DAIR')
 			parent.states.text = str('DAIR')
+			return false
+		states.HITFREEZE:
+			parent.play_animation('HITSTUN') 
+			parent.states.text = str('HITFREEZE')
 			return false
 
 func exit_state(old_state, new_state):
@@ -968,3 +984,17 @@ func Ledge():
 					parent.last_ledge = collider
 					return true
 					parent.GRAVITY = true
+
+var kbx
+var kby
+var hd
+var vd
+var pos
+
+func hitfreeze(duration: float, knockback: Array):
+	pos = parent.get_position()
+	parent.freezeframes = duration
+	kbx = knockback[0]
+	kby = knockback[1]
+	hd = knockback[2]
+	vd = knockback[3]

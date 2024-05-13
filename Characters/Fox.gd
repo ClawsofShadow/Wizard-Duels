@@ -48,6 +48,18 @@ func _physics_process(delta):
 	$Frames.text = str(frame)
 	selfState = states
 
+func hit_pauses(delta):
+	if hit_pause < hit_pause_dir:
+		self.position = temp_pos
+		hit_pause += floor((1 * delta) * 60)
+	else:
+		if temp_vel != Vector2(0,0):
+			self.velocity.x = temp_vel.x
+			self.velocity.y = temp_vel.y
+			temp_vel = Vector2(0,0)
+		hit_pause_dir = 0
+		hit_pause = 0
+
 func DOWN_TILT():
 	if frame == 5:
 		call_deferred("create_hitbox", 40, 20, 8, 90, 3, 120, 3, 'normal', Vector2(64,32), 0, 1)

@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="Wizard Duels: Wizards Fighting Game"
-config/version="1"
-run/main_scene="res://Stages/Smashville/Test stage.tscn"
+config/version="2.5"
+run/main_scene="res://Stages/Smashville/Stage.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0.431373, 0.109804, 0.0470588, 1)
 boot_splash/image="res://Sword and Shield.png"
 config/icon="res://icon.svg"
 boot_splash/minimum_display_time=3
+run/version=""
+
+[autoload]
+
+Globals="*res://Autoload/Globals.gd"
 
 [display]
 
@@ -29,6 +34,7 @@ window/stretch/mode="canvas_items"
 [file_customization]
 
 folder_colors={
+"res://Autoload/": "gray",
 "res://Characters/": "blue",
 "res://Characters/Fox/": "red",
 "res://Characters/Fox/scripts/": "gray",

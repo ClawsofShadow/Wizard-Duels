@@ -45,9 +45,9 @@ func _ready():
 
 func _physics_process(delta):
 	if framez < duration:
-		framez += 1
+		framez += floor(delta * 60)
 	elif framez == duration:
-		Engine.time_scale = 1
+		#Engine.time_scale = 1
 		queue_free()
 		return
 	if get_parent().selfState != parentstate:
@@ -55,8 +55,8 @@ func _physics_process(delta):
 		queue_free()
 		return 
 		
-func handle_hitbox_collision(body: Node):
-	if !(body in player_list):
+func handle_hitbox_collision(body: Node2D):
+	if body not in player_list:
 		player_list.append(body)
 		var charstate
 		charstate = body.get_node("StateMachine")
@@ -64,15 +64,31 @@ func handle_hitbox_collision(body: Node):
 		body.percentage += damage
 		knockbackval = knockback(body.percentage,damage,weight,kb_scaling,base_kb,1)
 		s_angle(body)
-		angle_flippers(body)
+		charstate.state = charstate.states.HITFREEZE
+		charstate.hitfreeze(
+			hitlag(damage, hitlag_modifier),
+			angle_flippers(body),
+			#angle_flippers(Vector2(body.velocity.x, body.velocity.y))
+		)
+		#charstate.hitfreeze(hitlag(damage, hitlag_modifier),angle_flippers(Vector2(body.velocity.y)))#, body.global_position))
+
 		body.knockback = knockbackval
 		body.hitstun = getHitstun(knockbackval/0.3)
 		get_parent().connected = true
 		body.frames()
-		charstate.state = charstate.states.HITSTUN
+
+		Globals.getHitstun(hitlag(damage, hitlag_modifier), hitlag(damage,hitlag_modifier)/60)
+		get_parent().hit_pause_dir = duration - framez
+		get_parent().temp_pos = get_parent().position
+		get_parent().temp_vel = get_parent().velocity
 
 func getHitstun(knockback):
 	return floor(knockback * 0.4);
+
+func hitlag(dmg: float, lag: float) -> float:
+	damage = dmg
+	hitlag_modifier = lag
+	return floor((((floor(dmg) * 0.65) + 6) * lag))
 
 @export var percentage = 0
 @export var weight = 100
@@ -140,7 +156,7 @@ func getVerticalVelocity(knockback, angle):
 	verticalVelocity = round(verticalVelocity * 100000) / 100000;
 	return verticalVelocity
 
-func angle_flippers(body):
+func angle_flippers(body: Node2D):
 	var xangle
 	if get_parent().direction() == 1:
 		xangle = (-(((body.global_position.angle_to_point(get_parent().global_position))*180)/PI))

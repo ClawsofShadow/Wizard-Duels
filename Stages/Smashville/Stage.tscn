@@ -1,19 +1,19 @@
 [gd_scene load_steps=6 format=3 uid="uid://n52qxcs71c5a"]
 
-[ext_resource type="Texture2D" uid="uid://pgww3kxcwq1a" path="res://Stages/Smashville/smashville.png" id="1_y01yi"]
-[ext_resource type="Script" path="res://Stages/Smashville/StageCamera.gd" id="2_1f14g"]
-[ext_resource type="PackedScene" uid="uid://bgf743xmdymnl" path="res://Characters/Fox.tscn" id="2_8lmml"]
-[ext_resource type="PackedScene" uid="uid://bnff7f78ad0o5" path="res://Stages/Stage Assests/Ledge.tscn" id="3_gakgy"]
+[ext_resource type="Texture2D" uid="uid://pgww3kxcwq1a" path="res://Stages/Smashville/smashville.png" id="1_rtd23"]
+[ext_resource type="Script" path="res://Stages/Smashville/StageCamera.gd" id="2_2dx5q"]
+[ext_resource type="PackedScene" uid="uid://bgf743xmdymnl" path="res://Characters/Fox.tscn" id="3_70c1q"]
+[ext_resource type="PackedScene" uid="uid://bnff7f78ad0o5" path="res://Stages/Stage Assests/Ledge.tscn" id="4_m14nh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yq6jy"]
 size = Vector2(1377, 38)
 
-[node name="Smashville" type="Node2D"]
+[node name="Stage" type="Node2D"]
 
 [node name="Smashville" type="Sprite2D" parent="."]
 position = Vector2(6, -94)
 scale = Vector2(1.78333, 1.78333)
-texture = ExtResource("1_y01yi")
+texture = ExtResource("1_rtd23")
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2(960, 771)
@@ -55,22 +55,22 @@ drag_left_margin = 0.0
 drag_right_margin = 0.0
 editor_draw_limits = true
 editor_draw_drag_margin = true
-script = ExtResource("2_1f14g")
+script = ExtResource("2_2dx5q")
 
-[node name="FOX" parent="." instance=ExtResource("2_8lmml")]
+[node name="FOX" parent="." instance=ExtResource("3_70c1q")]
 position = Vector2(504, 18)
 id = 1
 
-[node name="FOX3" parent="." instance=ExtResource("2_8lmml")]
+[node name="FOX3" parent="." instance=ExtResource("3_70c1q")]
 position = Vector2(-348, 14)
 id = 2
 
-[node name="Ledge" parent="." instance=ExtResource("3_gakgy")]
+[node name="Ledge" parent="." instance=ExtResource("4_m14nh")]
 position = Vector2(186, -11)
 
-[node name="Ledge2" parent="." instance=ExtResource("3_gakgy")]
+[node name="Ledge2" parent="." instance=ExtResource("4_m14nh")]
 position = Vector2(-711, 155)
 
-[node name="Ledge3" parent="." instance=ExtResource("3_gakgy")]
+[node name="Ledge3" parent="." instance=ExtResource("4_m14nh")]
 position = Vector2(710, 154)
 ledge_Side = "Right"
