@@ -710,8 +710,8 @@ func get_transition(delta):
 		states.HITFREEZE:
 			if parent.freezeframes == 0:
 				parent.frames()
-				parent.veloctiy.x = kbx
-				parent.veloctiy.y = kby
+				parent.velocity.x = kbx
+				parent.velocity.y = kby
 				parent.hdecay = hd
 				parent.vdecay = vd
 				return states.HITSTUN

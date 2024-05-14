@@ -67,8 +67,7 @@ func handle_hitbox_collision(body: Node2D):
 		charstate.state = charstate.states.HITFREEZE
 		charstate.hitfreeze(
 			hitlag(damage, hitlag_modifier),
-			angle_flippers(body),
-			#angle_flippers(Vector2(body.velocity.x, body.velocity.y))
+			angle_flippersv2(Vector2(body.velocity.x, body.velocity.y), body.global_position)
 		)
 		#charstate.hitfreeze(hitlag(damage, hitlag_modifier),angle_flippers(Vector2(body.velocity.y)))#, body.global_position))
 
@@ -77,7 +76,7 @@ func handle_hitbox_collision(body: Node2D):
 		get_parent().connected = true
 		body.frames()
 
-		Globals.getHitstun(hitlag(damage, hitlag_modifier), hitlag(damage,hitlag_modifier)/60)
+		Globals.hitstun(hitlag(damage, hitlag_modifier), hitlag(damage,hitlag_modifier)/60)
 		get_parent().hit_pause_dir = duration - framez
 		get_parent().temp_pos = get_parent().position
 		get_parent().temp_vel = get_parent().velocity
@@ -227,3 +226,83 @@ func angle_flippers(body: Node2D):
 			body.velocity.y = (getVerticalVelocity(knockbackval, -angle))
 			body.hdecay = (getHorizontalDecay(angle))
 			body.vdecay = (getVerticalDecay(angle))
+
+func angle_flippersv2(body_vel: Vector2, body_position: Vector2, hdecay = 0, vdecay = 0):
+	var xangle
+	if get_parent().direction() == -1:
+		xangle = (-(((body_position.angle_to_point(get_parent().global_position))*180)/PI))
+	else:
+		xangle = (((body_position.angle_to_point(get_parent().global_position))*180)/PI)
+
+	match angle_flipper:
+		0:
+			body_vel.x = (getHorizontalVelocity (knockbackval, -angle))
+			body_vel.y = (getVerticalVelocity (knockbackval, -angle))
+			hdecay = (getHorizontalDecay(-angle))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		1:
+			if get_parent().direction() == -1:
+				xangle = -(((self.global_position.angle_to_point(get_parent().global_position))*180)/PI)
+			else:
+				xangle = (((self.global_position.angle_to_point(get_parent().global_position))*180)/PI)
+			body_vel.x = ((getHorizontalVelocity (knockbackval, xangle + 180)))
+			body_vel.y = ((getVerticalVelocity (knockbackval, -xangle)))
+			hdecay = (getHorizontalDecay(angle+180))
+			vdecay = (getVerticalDecay(xangle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		2:
+			if get_parent().direction() == -1:
+				xangle = -(((get_parent().global_position.angle_to_point(self.global_position))* 180)/PI)
+			else:
+				xangle = (((get_parent().global_position.angle_to_point(self.global_position))*180)/PI)
+			body_vel.x = ((getHorizontalVelocity(knockbackval, -xangle+180)))
+			body_vel.y = ((getVerticalVelocity(knockbackval, -xangle)))
+			hdecay = (getHorizontalDecay(xangle+180))
+			vdecay = (getVerticalDecay(xangle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		3:
+			if get_parent().direction() == -1:
+				xangle = (-(((get_parent().global_position.angle_to_point(self.global_position))* 180)/PI))+180
+			else:
+				xangle = (((get_parent().global_position.angle_to_point(self.global_position))*180)/PI)
+			body_vel.x = (getHorizontalVelocity (knockbackval, xangle))
+			body_vel.y = (getVerticalVelocity(knockbackval, -angle))
+			hdecay = (getHorizontalDecay(xangle))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		4:
+			if get_parent().direction() == -1:
+				xangle = -(((get_parent().global_position.angle_to_point(self.global_position))* 180)/PI)+180
+			else:
+				xangle = (((get_parent().global_position.angle_to_point(self.global_position))*180)/PI)
+			body_vel.x = (getHorizontalVelocity(knockbackval, -xangle * 180))
+			body_vel.y = (getVerticalVelocity(knockbackval, -angle))
+			hdecay = (getHorizontalDecay(angle))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		5:
+			body_vel.x = (getHorizontalVelocity(knockbackval, -xangle + 180))
+			body_vel.y = (getVerticalVelocity(knockbackval, -angle))
+			hdecay = (getHorizontalDecay(angle+180))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		6:
+			body_vel.x = (getHorizontalVelocity((knockbackval), xangle))
+			body_vel.y = (getVerticalVelocity(knockbackval, -angle))
+			hdecay = (getHorizontalDecay(xangle))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
+
+		7:
+			body_vel.x = (getHorizontalVelocity(knockbackval, -xangle * 180))
+			body_vel.y = (getVerticalVelocity(knockbackval, -angle))
+			hdecay = (getHorizontalDecay(angle))
+			vdecay = (getVerticalDecay(angle))
+			return [body_vel.x, body_vel.y, hdecay, vdecay]
