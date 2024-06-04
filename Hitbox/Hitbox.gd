@@ -1,6 +1,6 @@
 extends Area2D
 
-var parent = get_parent()
+@onready var parent = get_parent()
 @export var width = 300
 @export var height = 400
 @export var damage = 50

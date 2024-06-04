@@ -576,10 +576,11 @@ func get_transition(delta):
 			pass
 
 		states.HITSTUN:
-			if parent.knockback >= 3:
+			if parent.knockback >= 0: #3:
 				var bounce = parent.move_and_collide(parent.velocity * delta)
-				if bounce:
-					parent.velocity = parent.velocity.bounce(bounce.get_normal())  * .8
+				if parent.is_on_floor():
+					parent.velocity.y = kby - parent.velocity.y
+					parent.velocity = parent.velocity.bounce(parent.get_wall_normal()) *.8
 					parent.hitstun = round(parent.hitstun * .8)
 			if parent.velocity.y < 0:
 				parent.velocity.y += parent.vdecay * 0.5 * Engine.time_scale
