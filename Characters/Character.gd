@@ -69,6 +69,7 @@ var selfState
 @export var GroundR: RayCast2D
 @export var Ledge_Grab_F: RayCast2D
 @export var Ledge_Grab_B: RayCast2D
+@export var gun_pos: Marker2D
 @export var anim: AnimationPlayer
 
 var frame = 0

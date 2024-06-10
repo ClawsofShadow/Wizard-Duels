@@ -11,6 +11,7 @@ size = Vector2(60, 94)
 
 [sub_resource type="SystemFont" id="SystemFont_bg6cx"]
 font_names = PackedStringArray("Fantasy")
+subpixel_positioning = 0
 multichannel_signed_distance_field = true
 
 [sub_resource type="FontVariation" id="FontVariation_axkb7"]
@@ -18,6 +19,7 @@ base_font = SubResource("SystemFont_bg6cx")
 
 [sub_resource type="SystemFont" id="SystemFont_d4gkc"]
 font_names = PackedStringArray("Fantasy")
+subpixel_positioning = 0
 multichannel_signed_distance_field = true
 
 [sub_resource type="FontVariation" id="FontVariation_k0jbb"]
@@ -123,3 +125,6 @@ horizontal_alignment = 1
 visible = false
 position = Vector2(63.5, 31)
 shape = SubResource("RectangleShape2D_5hfqq")
+
+[node name="gun_pos" type="Marker2D" parent="."]
+position = Vector2(56, 0)
